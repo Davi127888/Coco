@@ -1,15 +1,16 @@
-# Coco
-Incrto
 getgenv().serial = {
     Settings = {
         Prediction = 0.0440, 
-        AutoClick = false, -- 0
+        AutoClick = false, -- Dont work atm
     },
     TargetLock = {
-        LockedTarget = nil, -- print("head true")
+        LockedTarget = nil, -- dont change
         AimPart = "Head", 
-        Enabled = true,  
+        Enabled = true, 
     },
-}
-
-loadstring(game:HttpGet("https://raw.githubusercontent.com/egípcia/serial/refs/heads/main/mumie))()
+    TargetStrafe = {
+        Enabled = true,
+        UseButton = true,  
+        Distance = 5,  
+        Height = 5,    
+        Speed = 20,
