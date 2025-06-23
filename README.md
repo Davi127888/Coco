@@ -1,33 +1,34 @@
-local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
+local mouse = localPlayer:GetMouse()
 
-local Window = Fluent:CreateWindow({
-    Title = "Aimlock Script" .. Fluent.Version,
-    TabWidth = 160, Size = UDim2.fromOffset(580, 460), Theme = "Dark"
-})
+-- function to find the nearest enemy
+function getClosestTarget()
+    local closest = nil
+    local shortestDistance = math.huge
 
-local Tabs = {
-    Main = Window:AddTab({ Title = "Aimlock" }),
-    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
-}
--- parágrafo
-Tabs.Main:AddParagraph({ Title = "Davi Te Ajudou", Content = "Obrigado por usar Meu Aimbot" })
--- botões
-Tabs.Main:AddButton({ Title = "Button", Callback = function() getgenv().serial = {
-    Settings = {
-        Prediction = 0.0440, 
-        AutoClick = false, -- Dont work atm
-    },
-    TargetLock = {
-        LockedTarget = nil, -- dont change
-        AimPart = "Head", 
-        Enabled = true, 
-    },
-    TargetStrafe = {
-        Enabled = true,
-        UseButton = true,  
-        Distance = 5,  
-        Height = 5,    
-        Speed = 20,     
-  end
-         end
-               end)
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= localPlayer and player.Character and player.Character:FindFirstChild("Head") then
+            local head = player.Character.Head
+            local screenPos, onScreen = workspace.CurrentCamera:WorldToViewportPoint(head.Position)
+
+            if onScreen then
+                local dist = (Vector2.new(mouse.X, mouse.Y) - Vector2.new(screenPos.X, screenPos.Y)).Magnitude
+                if dist < shortestDistance then
+                    shortestDistance = dist
+                    closest = head
+                end
+            end
+        end
+    end
+
+    return closest
+end
+
+-- Assisted aim (chamar quando necessário, tipo ao clicar)
+local target = getClosestTarget()
+if target then
+    mouse.TargetFilter = target.Parent
+    mouse.Icon = "rbxassetid://12345678" -- ícone opcional para indicar lock
+    print("target locked:", target.Parent.Name)
+end)
